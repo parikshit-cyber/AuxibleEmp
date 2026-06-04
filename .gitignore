@@ -3,6 +3,11 @@
 # IDE and editors
 .idea/
 .vscode/
+.emergent/
+
+# Utility scripts
+check_db.py
+clear_db.py
 
 # Dependencies
 node_modules/
