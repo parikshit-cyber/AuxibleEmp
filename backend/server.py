@@ -606,7 +606,6 @@ async def startup():
 
     await ensure_user(os.environ["ADMIN_EMAIL"], os.environ["ADMIN_PASSWORD"], "Owner", "owner")
     await ensure_user(os.environ["HR_EMAIL"], os.environ["HR_PASSWORD"], "HR Manager", "hr")
-    await ensure_user("rahul@auxibleindia.com", "Employee@123", "Rahul Kumar", "employee")
     # Remove any legacy "admin" role accounts (migrated to owner/hr)
     await db.users.delete_many({"role": "admin"})
 
