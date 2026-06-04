@@ -1,0 +1,49 @@
+{
+  "summary": "Iteration 3 (Owner/HR roles, removed Jobs/Venues, PDF export, map fix, rename Technician->Employee) verified end-to-end. Backend pytest 19/19 PASS (auth roles, staff gating, removed endpoints 404, analytics pivot, PDF export). Frontend Playwright: Owner & HR both land at /admin with correct role-badge ('Owner'/'HR'); sidebar contains only [Live Monitor, Analytics, Employees, Updates Feed, Attendance] - no Jobs/Venues; /admin/jobs, /admin/venues, /app/jobs all redirect to /login (routes removed); OSM tiles render on Live Monitor (16 tiles loaded, NOT blank) with dark filter; 'Field Employees' header, no 'Technician' wording in admin shell; Employees tab shows Export PDF button which downloads a valid %PDF (Rahul_Sharma_report.pdf); Employee app shows exactly 3 bottom tabs (Home, Updates, Alerts).",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "/api/admin/analytics + /api/admin/stats", "issue": "updates_last_7_days / updates_today still use fragile YYYY-MM-DD string vs ISO datetime prefix comparison (carry-over from iter 1/2). Works but should compare against ISO day bounds."},
+      {"endpoint": "/api/users/{id}/export", "issue": "No validation that target user_id is role='employee' - staff could export another staff member's report. Low risk but inconsistent with delete_employee filter."},
+      {"endpoint": "/api/admin/flag/{user_id}", "issue": "Notification title hardcodes 'Marked Red by Owner' / 'Contact Owner Immediately' even when HR triggers the flag - copy should be role-neutral (e.g. 'Marked Red by Management')."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Login page marketing copy", "issue": "Left-pane description still reads 'Track every technician, every install' and tagline 'AUDIO COMMAND CENTER'. The rename Technician->Employee was applied to admin shell but missed on the public login page.", "selector": "Login.js hero copy", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Analytics 'Updates by Status' pie", "issues": ["When zero updates exist, the pie panel shows 'No update data yet.' which is correct empty-state, but the legend/axis area is large and looks empty. Consider compacting the empty state."]},
+      {"screen": "Live Monitor table", "issues": ["When an employee has 'No GPS' the Directions cell is blank (correct). Confirmed: data-testid='directions-{id}' only appears when live coords exist - test could not exercise it because seeded Rahul has no live ping."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_iter3_roles_export.py",
+    "/app/backend/tests/test_activity_tracker.py",
+    "/app/test_reports/pytest/iter3_results.xml"
+  ],
+  "action_items": [
+    "(Low) Update Login.js hero copy: replace 'Track every technician' with 'Track every employee' and 'AUDIO COMMAND CENTER' tagline review for consistency with rename.",
+    "(Optional) Validate role='employee' in GET /api/users/{id}/export to prevent staff-on-staff export.",
+    "(Optional) Make flag notification titles role-neutral so HR-triggered flags don't say 'by Owner'.",
+    "(Optional) Harden ISO-date string comparisons in /api/admin/analytics & /api/admin/stats (carry-over)."
+  ],
+  "critical_code_review_comments": [
+    "server.py L592 deletes legacy admin role on every startup - fine for migration but could be guarded by a one-time migration flag to avoid surprise deletions in future deploys.",
+    "server.py L585 ensure_user always re-sets role on every startup - if an account's role is changed via DB it will be silently overwritten. Document this or restrict to seed accounts.",
+    "PDF export uses synchronous reportlab inside async endpoint - acceptable for small reports but could block event loop for large attendance histories (200+ records). Consider running in threadpool (await asyncio.to_thread).",
+    "STAFF_ROLES still includes legacy 'admin' even though startup deletes them - dead code; remove from set for clarity.",
+    "Login endpoint lacks brute-force lockout (carry-over from iter 1/2)."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_iter3_roles_export.py (new)"
+  ],
+  "success_rate": {"backend": "100% (19/19 new iter3 tests)", "frontend": "100% on all 10 reviewed flows"},
+  "test_credentials": "Owner owner@auxibleindia.com/Owner@2026, HR hr@auxibleindia.com/Hr@2026, Employee rahul@auxibleindia.com/Employee@123",
+  "seed_data_creation": "Tests created TEST_Export_* and TEST_HR_* employees, both deleted in teardown. No leftover seed data.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 10 review items pass. Reusable suites: test_iter3_roles_export.py (19 tests covering owner/hr/employee roles, PDF, removed endpoints, analytics pivot) and test_activity_tracker.py (auth/users/attendance/updates/flags). NOTE: test_new_features.py from iter2 covers Venues/Jobs and will now fail with 404s - those tests are obsolete and should not be run. Map tiles now use OpenStreetMap (tile.openstreetmap.org) which IS reachable from sandbox (16 tiles confirmed loaded) - the previous iter2 blank-map issue is fixed. To test 'Directions' link, a live_location.ping must be posted for an employee first.",
+  "rca of the issue": "Map fix: switching from CartoDB (blocked in sandbox/preview egress) to OpenStreetMap tiles plus a ResizeObserver invalidateSize call resolved the blank map. Verified 16 leaflet-tile elements rendered in DOM under .leaflet-container. PDF export: reportlab Canvas generates a 1-page A4 with gold/dark branding, attendance summary and last 14 updates - download verified with %PDF magic bytes and Content-Disposition attachment header. Role separation: STAFF_ROLES = {owner, hr, admin} on backend; require_admin returns 403 for employee tokens (verified). Frontend ProtectedRoute with staff prop correctly redirects /admin/jobs and /admin/venues (now non-existent routes) to /login."
+}

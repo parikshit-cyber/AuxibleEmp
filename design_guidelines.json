@@ -1,0 +1,109 @@
+{
+  "theme": "dark",
+  "archetype": "5 (Luxury / Tactical Hybrid)",
+  "concept": "Premium Audio Command Center. A blend of high-end club/theatre aesthetics (mysterious, depth-rich, 3D) and elite performance metrics.",
+  "typography": {
+    "heading_font": "Outfit",
+    "body_font": "IBM Plex Sans",
+    "rules": [
+      "Headings must use tight letter spacing (tracking-tight) and never be centered by default.",
+      "Overlines/Labels must be uppercase, tiny, and wide spacing (tracking-[0.2em]).",
+      "Line height must be tight (leading-none) for headers and loose (leading-relaxed) for body.",
+      "Never use Inter for headings."
+    ],
+    "hierarchy": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight",
+      "h2": "text-2xl sm:text-3xl lg:text-4xl font-medium tracking-tight",
+      "h3": "text-xl sm:text-2xl font-medium",
+      "body": "text-base leading-relaxed",
+      "label": "text-xs uppercase tracking-[0.2em] font-bold"
+    }
+  },
+  "colors": {
+    "background": "#0A0A0A",
+    "surface": "#121212",
+    "surface_glass": "rgba(0, 0, 0, 0.6)",
+    "primary": "#D4AF37",
+    "primary_hover": "#F0C74A",
+    "accent_alert": "#FF3B30",
+    "text_primary": "#FFFFFF",
+    "text_secondary": "#A1A1AA",
+    "border": "rgba(255, 255, 255, 0.1)",
+    "rules": [
+      "Tinted Grey Rule: All greys must feel alive, avoid pure #808080.",
+      "Hover states must be a lighter hue of the active state color.",
+      "Avoid purple (#9D4CDD) and teal (#1B93A4) entirely."
+    ]
+  },
+  "layout_and_spacing": {
+    "admin_dashboard": {
+      "mode": "CONTROL ROOM",
+      "grid": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6",
+      "spacing": "p-6",
+      "rules": "Every pixel must be utilized. Use h-full on children to stretch."
+    },
+    "mobile_technician_app": {
+      "mode": "BENTO",
+      "grid": "grid-cols-1 gap-6",
+      "spacing": "p-6 to p-8",
+      "rules": "Mobile-first, generous padding inside cards to prevent collision."
+    }
+  },
+  "surface_strategies": {
+    "dashboard_cards": "Flat background (#121212), 1px subtle border (border-white/10), max rounded-lg, no heavy shadow.",
+    "nav_headers": "Crystal Glass variant: bg-black/60, backdrop-blur-xl, 1px bottom border (border-white/10).",
+    "status_pills": "High-contrast text on pure solid accent backgrounds (e.g., bg-[#FF3B30] text-white) with sharp edges."
+  },
+  "visual_enhancers": {
+    "3d_map": "Admin live monitor must use a 3D dark-mode basemap (e.g., Leaflet/Mapbox with pitch/bearing adjusted for 3D building perspective).",
+    "animations": "Framer Motion for micro-interactions (hover scale, staggering lists). The mobile check-in button should have a pulsing 'Tracing Beam' or glowing border effect.",
+    "icons": "@phosphor-icons/react for premium, technical interface iconography."
+  },
+  "component_overrides": {
+    "shadcn_ui": [
+      "Forms/Inputs: Use Shadcn pure logic, but override backgrounds to #0A0A0A with border-white/10. Focus states must have ring-primary.",
+      "Buttons: Limit primary color to key CTAs (Check-in, Assign Job). Secondary buttons should be transparent with white border.",
+      "Cards: Remove default Shadcn card styling, apply surface strategies from above.",
+      "Dropdowns/Dialogs: Must use pure HTML+Tailwind styles inside Shadcn logic to match the dark theme perfectly."
+    ]
+  },
+  "media": {
+    "image_urls": [
+      {
+        "url": "https://images.unsplash.com/photo-1561314105-e6ac04c2984a?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjV8MHwxfHNlYXJjaHwxfHxjbHViJTIwc291bmQlMjBzeXN0ZW18ZW58MHx8fHwxNzgwNTQzNTQwfDA&ixlib=rb-4.1.0&q=85",
+        "category": "hero_background",
+        "description": "Black PA sound system"
+      },
+      {
+        "url": "https://images.pexels.com/photos/14925309/pexels-photo-14925309.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "live_event_context",
+        "description": "Lively night club scene with DJ mixing music"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1774301266018-57c0b190ed43?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBob21lJTIwdGhlYXRlcnxlbnwwfHx8fDE3ODA1NDM1NDB8MA&ixlib=rb-4.1.0&q=85",
+        "category": "venue_reference",
+        "description": "Modern luxury home theater"
+      },
+      {
+        "url": "https://images.unsplash.com/photo-1618609377864-68609b857e90?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NzB8MHwxfHNlYXJjaHwxfHxhdWRpbyUyMHRlY2huaWNpYW58ZW58MHx8fHwxNzgwNTQzNTQwfDA&ixlib=rb-4.1.0&q=85",
+        "category": "technician_action",
+        "description": "Black and green audio mixer console"
+      },
+      {
+        "url": "https://images.pexels.com/photos/3042642/pexels-photo-3042642.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "category": "technician_portrait",
+        "description": "Sound engineer working on a professional audio console"
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "You are building 'Auxible India' — an enterprise field-service SaaS for setting up music systems in clubs, bars, and luxury home theatres.",
+    "Implement two interfaces: 1. A desktop 'Command Center' for Admins. 2. A mobile-first Web App for Field Technicians.",
+    "The admin dashboard must use a Dark Mode 3D map (Leaflet/Mapbox) for live tracking.",
+    "Add 'data-testid' to all interactive elements for testing (e.g., login-submit, checkin-button).",
+    "Avoid standard Shadcn grey/white styling. Inject the deep obsidian (#0A0A0A) and audio gold/brass accents into components.",
+    "Mobile app should have a prominent 'Check In / Out' interaction, use Framer Motion for a premium pressing feedback.",
+    "No purple or teal. Pure blacks, whites, and gold/red accents only.",
+    "All components must be .js files as .tsx is not supported here."
+  ]
+}
